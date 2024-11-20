@@ -97,29 +97,20 @@ body {
   .gpio-toggle {
     margin-top: 5px;
   }
-  .i2c-container {
-    padding: 20px;
+  .i2c-container_usb {
+    padding: 5px;
     /* text-align: left; */
   }
-
-  .i2c-controls {
+  .i2c-controls_usb {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
+    justify-content: left;
     align-items: flex-end;
     max-width: 800px;
-    width: 100%;
-    margin: 0 auto;
+    width: 70%;
 
   }
-  .input-group {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-width: 120px;
-    max-width: 220px;
-  }
-
   .input-group_usb {
     display: flex;
     flex-direction: column;
@@ -127,6 +118,7 @@ body {
     min-width: 120px;
   }
   .input-group_usb label {
+    margin-top: 5px;
     margin-bottom: 5px;
   }
   .input-group_usb input {
@@ -139,6 +131,29 @@ body {
     flex: 1;
     padding: 10px;
     cursor: pointer;
+  }
+
+  .i2c-container {
+    padding: 5px;
+    /* text-align: left; */
+  }
+  .i2c-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    align-items: flex-end;
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 120px;
+    max-width: 220px;
   }
 
   .input-group label {

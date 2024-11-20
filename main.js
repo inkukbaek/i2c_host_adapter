@@ -37,12 +37,14 @@ document.getElementById('usb-write-command').addEventListener('click', async () 
         logMessage('Only AARDVARK supports USB function')
         return {message:'Only AARDVARK supports USB function', status: false}
     }
+    const interfaceNumber = i2c_host_adapter.interfaceNumber;
+    const endpointOut = i2c_host_adapter.endpointOut;
     const usb_command_string = document.getElementById('usb-command').value
-    const usb_command = hexStringToArray(usb_command_string)
-    console.log(await i2c_host_adapter.device.claimInterface(0))
-    console.log(await i2c_host_adapter.device.transferOut(2, new Uint8Array(usb_command)))
-    console.log(await i2c_host_adapter.device.releaseInterface(0))
-
+    const usb_command = hexStringToArray(usb_command_string);
+    await i2c_host_adapter.device.claimInterface(interfaceNumber);
+    await i2c_host_adapter.device.transferOut(endpointOut, new Uint8Array(usb_command))
+    await i2c_host_adapter.device.releaseInterface(interfaceNumber)
+    logMessage( `${i2c_host_adapter_name} - USB WRITE: ${usb_command_string}`);
 });
 
 document.getElementById('usb-read-command').addEventListener('click', async () => {
@@ -62,8 +64,10 @@ document.getElementById('usb-read-command').addEventListener('click', async () =
 
     const read_data = await i2c_host_adapter.device.transferIn(endpointIn, 32); // 1번 엔드포인트에서 32바이트 읽기
     await i2c_host_adapter.device.releaseInterface(interfaceNumber);
-    console.log(read_data.data);
-
+    const read_data_arr = new Uint8Array(read_data.data.buffer);
+    const log_msg = Array.from(read_data_arr, byte => `0x${byte.toString(16).toUpperCase()}`);
+    logMessage( `${i2c_host_adapter_name} - USB READ: ${log_msg}`);
+    document.getElementById("usb-read").value = log_msg
 });
 
 
