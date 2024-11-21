@@ -137,8 +137,8 @@ export class AARDVARK {
         let response;
         this.i2c_dev_addr = parseInt(i2c_dev_addr/2);
         const reg_addr = i2c_reg_addr;
-        const read_command_0 = [0x49, 0x06, this.i2c_dev_addr, 0x00, 0x01, 0x08, 0x00, 0x01];
-        const read_command_1 = [0x69, i2c_length, i2c_reg_addr];
+        const read_command_0 = [0x49, 0x06, this.i2c_dev_addr, 0x00, 0x01, 0x08, 0x00, i2c_length];
+        const read_command_1 = [0x69, 0x01, i2c_reg_addr];
         try {
             await this.device.claimInterface(this.interfaceNumber);
         }
@@ -161,7 +161,7 @@ export class AARDVARK {
                 const data_arr_temp = Array.from(data_arr)
                 data_arr_temp.push(...Array.from(read_data_slice))
                 data_arr = new Uint8Array(data_arr_temp);
-                data_idx = findSequence(data_arr, [82, 1, 0, 114, 1]);
+                data_idx = findSequence(data_arr, [82, 1, 0, 114, i2c_length]);
                 if (data_idx !== -1) {
                     console.log('retries', retries)
                     break;
@@ -170,8 +170,8 @@ export class AARDVARK {
                 retries++;
             }
             const read_success = true;
-            const r_data = data_arr[data_idx+5];
-            response = {"addr":reg_addr, "data":[r_data], "success":read_success};
+            const r_data = data_arr.slice(data_idx+5, data_idx+5+i2c_length);
+            response = {"addr":reg_addr, "data":r_data, "success":read_success};
 
         } catch (error) {
             await this.device.releaseInterface(this.interfaceNumber)

@@ -28,7 +28,7 @@ document.getElementById('connect-mcp2221a').addEventListener('click', async () =
     logMessage(init_response.message)
     await i2c_host_adapter.init_state();
     gp_status = await i2c_host_adapter.gpioGetPins();
-    console.log(gp_status);
+    // console.log(gp_status);
     updateGPIOStates(gp_status);
 });
 
@@ -104,7 +104,6 @@ document.getElementById('i2c-read').addEventListener('click', async () => {
     // logMessage( 'i2c-read', hexString(slaveAddress), hexString(registerAddress), hexString(length) );
     const i2cReadData = await i2c_host_adapter.i2cRead(slaveAddress, registerAddress, length);
     if (i2cReadData.success){
-        console.log('i2cReadData', i2cReadData.data);
         const readLog = Array.from(i2cReadData.data).map(x => hexString(x)).join(', ');
         logMessage( `${i2c_host_adapter_name} - READ: `, hexString(slaveAddress), hexString(registerAddress), `[${readLog}]`);
     } else {

@@ -129,7 +129,7 @@ export class MCP2221 {
           // send data
           this.device.sendReport(reportId, new Uint8Array(sendData))
             .then(() => {
-              console.log(`Sent data: ${Array.from(sendData).map(x => x.toString(16).toUpperCase().padStart(4, '0x')).join(' ')}`);
+            //   console.log(`Sent data: ${Array.from(sendData).map(x => x.toString(16).toUpperCase().padStart(4, '0x')).join(' ')}`);
             })
             .catch(error => {
               console.error("Error sending data:", error);
@@ -141,7 +141,7 @@ export class MCP2221 {
             const { data, reportId } = event;
             const receivedData = new Uint8Array(data.buffer);
             // console.log(`Received report ID ${reportId}:`, receivedData);
-            console.log(`Received data: ${Array.from(receivedData).map(x => x.toString(16).toUpperCase().padStart(4, '0x')).join(' ')}`);
+            // console.log(`Received data: ${Array.from(receivedData).map(x => x.toString(16).toUpperCase().padStart(4, '0x')).join(' ')}`);
             this.device.removeEventListener('inputreport', handleInputReport);
             resolve(receivedData.slice(0, this.PACKET_SIZE));
           };
