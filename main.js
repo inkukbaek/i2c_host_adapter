@@ -1,6 +1,5 @@
 import {MCP2221} from './mcp2221a_web.js'
 import {AARDVARK} from './aardvark_web.js'
-let aardvark;
 let i2c_host_adapter;
 let i2c_host_adapter_name;
 let gp_status;
