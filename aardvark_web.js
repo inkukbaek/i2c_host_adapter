@@ -163,7 +163,6 @@ export class AARDVARK {
                 data_arr = new Uint8Array(data_arr_temp);
                 data_idx = findSequence(data_arr, [82, 1, 0, 114, i2c_length]);
                 if (data_idx !== -1) {
-                    console.log('retries', retries)
                     break;
                 }
                 sleep(2)
