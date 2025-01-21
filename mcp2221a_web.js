@@ -354,17 +354,23 @@ export class MCP2221 {
         // await sleep(1)
         this.dev_addr = i2c_slave_addr;
         const reg_addr = i2c_reg_addr;
-        const transfer_length_low = i2c_length;
-        const transfer_length_high = 0x00;
 
-        const param_w_ns = [1, 0, this.dev_addr, reg_addr];
+        let param_w_ns = [];
+        if (reg_addr > 0xFF) {
+            const reg_addr_high = (i2c_reg_addr >> 8) & 0xFF;
+            const reg_addr_low = i2c_reg_addr & 0xFF;
+            param_w_ns = [2, 0, this.dev_addr, reg_addr_high, reg_addr_low ];
+        } else {
+            param_w_ns = [1, 0, this.dev_addr, reg_addr];
+        }
         const command_w_ns = this.makeWritePacket(MCP2221.I2C_WRITE_DATA_NO_STOP, param_w_ns);
 
+        const transfer_length_low = i2c_length;
+        const transfer_length_high = 0x00;
         const param_r_rs = [transfer_length_low, transfer_length_high, this.dev_addr];
         const command_r_rs = this.makeWritePacket(MCP2221.I2C_READ_REPEATED_START, param_r_rs );
 
         const command_r = this.makeWritePacket(MCP2221.I2C_READ);
-
         // const data_w_ns = await this.writeRead(command_w_ns);
         try {
             const receivedData = await this.sendAndReceive(command_w_ns);
