@@ -87,7 +87,7 @@ export class HID_DEVICE {
                 this.device.addEventListener("inputreport", handleInputReport, { once: true });
             });
              // 🔹 패킷 전송
-             await this.device.sendReport(reportId, new Uint8Array(sendPacket));
+            await this.device.sendReport(reportId, new Uint8Array(sendPacket));
             // 🔹 패킷 수신 대기 및 수신 후 결과 받기
             const receivedData = await reportPromise;
 
