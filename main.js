@@ -20,23 +20,6 @@ document.getElementById('connect-mcp2221a').addEventListener('click', async () =
     i2c_host_adapter_name = i2c_host_adapter.device.productName;
     gp_status = await i2c_host_adapter.adapter.gpioGetPins();
     updateGPIOStates(gp_status);
-
-    // i2c_host_adapter = new MCP2221();
-    // const init_response = await i2c_host_adapter.init();
-    // console.log(i2c_host_adapter.device)
-    // i2c_host_adapter_name = i2c_host_adapter.device.productName
-    // document.getElementById("connected-adapter").value = `${i2c_host_adapter_name} is connected`
-    // logMessage(init_response.message)
-    // await i2c_host_adapter.init_state();
-    // gp_status = await i2c_host_adapter.gpioGetPins();
-    // // console.log(gp_status);
-    // updateGPIOStates(gp_status);
-});
-
-document.getElementById('connect-i2c-host-adapter').addEventListener('click', async () => {
-    // const i2c_host_product_name = "MCP2221A";
-    const i2c_host_product_name = "AARDVARK";
-    i2c_host_adapter = await connectI2CHostAdapter(i2c_host_product_name)
 });
 
 async function connectI2CHostAdapter (i2c_host_product_name) {
