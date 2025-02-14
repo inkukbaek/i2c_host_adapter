@@ -489,8 +489,7 @@ export class MCP2221 extends HID_DEVICE {
         try {
             const param = [MCP2221.MCP_RESET_1, MCP2221.MCP_RESET_2, MCP2221.MCP_RESET_3];
             const command = this.buildWritePacket(MCP2221.MCP_RESET_0, [...param]);
-            const reportId = 0;
-            await this.device.sendAndReceiveHIDReport(reportId, command);
+            this.sendAndReceiveHIDReport(command);
             await sleep(this.RESET_DELAY);
             logMessage('MCP2221A is now reset');
         } catch (error) {
