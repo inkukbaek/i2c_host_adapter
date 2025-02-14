@@ -15,7 +15,6 @@
                 <button id="connect-mcp2221a">Connect<br>MCP2221A</button>
                 <button id="reset-mcp2221a">Reset<br>MCP2221A</button>
                 <button id="connect-aardvark">Connect<br>AARDVARK</button>
-                <button id="reset-aardvark">Reset<br>AARDVARK</button>
 
                 <div class="input-group-connect">
                     <input type="text" id="connected-adapter" placeholder="Not Connected" readonly margin-top="10px">
@@ -75,7 +74,7 @@
                 </div>
                 <div class="i2c-container">
                     <div class="i2c-controls">
-                        <input type="file" id="fileInput" accept=".txt" style="display: none;">
+                        <input type="file" id="fileInput" accept=".txt" class="hidden">
                         <div class="input-group">
                             <label for="i2c-slave-address-script">I2C Slave Address for Script</label>
                             <input type="text" id="i2c-slave-address-script" placeholder="Slave Address (hex)" value="0xf0">
@@ -87,7 +86,7 @@
                             <button id="i2c-run-script">Run Script</button>
                         </div>
                         <div class="input-group">
-                            <label for="i2c-script-format"> Script Format = '(Reg Addr(Hex), Data(Hex))'</label>
+                            <text>Script Format = '(Reg Addr(Hex), Data(Hex))'</text>
                         </div>
                     </div>
                 </div>

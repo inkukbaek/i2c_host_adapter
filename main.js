@@ -1,5 +1,4 @@
-import {MCP2221} from './mcp2221a_web.js'
-import {AARDVARK} from './aardvark_web.js'
+import { I2C_HOST_ADAPTER } from './i2c_host_adapter.js';
 let i2c_host_adapter;
 let i2c_host_adapter_name;
 let gp_status;
@@ -10,26 +9,51 @@ let gp_status;
 document.getElementById('connect-aardvark').addEventListener('click', async () => {
     // const result = await navigator.usb.getDevices()
     // console.log(result)
-    i2c_host_adapter = new AARDVARK();
-    const init_response = await i2c_host_adapter.init();
+    const i2c_host_product_name = "AARDVARK";
+    i2c_host_adapter = await connectI2CHostAdapter(i2c_host_product_name)
     i2c_host_adapter_name = i2c_host_adapter.device.productName;
-    document.getElementById("connected-adapter").value = `${i2c_host_adapter_name} is connected`
-
-    logMessage(init_response.message)
 });
 
 document.getElementById('connect-mcp2221a').addEventListener('click', async () => {
-    i2c_host_adapter = new MCP2221();
-    const init_response = await i2c_host_adapter.init();
-    console.log(i2c_host_adapter.device)
-    i2c_host_adapter_name = i2c_host_adapter.device.productName
-    document.getElementById("connected-adapter").value = `${i2c_host_adapter_name} is connected`
-    logMessage(init_response.message)
-    await i2c_host_adapter.init_state();
-    gp_status = await i2c_host_adapter.gpioGetPins();
-    // console.log(gp_status);
+    const i2c_host_product_name = "MCP2221A";
+    i2c_host_adapter = await connectI2CHostAdapter(i2c_host_product_name);
+    i2c_host_adapter_name = i2c_host_adapter.device.productName;
+    gp_status = await i2c_host_adapter.adapter.gpioGetPins();
     updateGPIOStates(gp_status);
+
+    // i2c_host_adapter = new MCP2221();
+    // const init_response = await i2c_host_adapter.init();
+    // console.log(i2c_host_adapter.device)
+    // i2c_host_adapter_name = i2c_host_adapter.device.productName
+    // document.getElementById("connected-adapter").value = `${i2c_host_adapter_name} is connected`
+    // logMessage(init_response.message)
+    // await i2c_host_adapter.init_state();
+    // gp_status = await i2c_host_adapter.gpioGetPins();
+    // // console.log(gp_status);
+    // updateGPIOStates(gp_status);
 });
+
+document.getElementById('connect-i2c-host-adapter').addEventListener('click', async () => {
+    // const i2c_host_product_name = "MCP2221A";
+    const i2c_host_product_name = "AARDVARK";
+    i2c_host_adapter = await connectI2CHostAdapter(i2c_host_product_name)
+});
+
+async function connectI2CHostAdapter (i2c_host_product_name) {
+    const i2c_host_adapter = new I2C_HOST_ADAPTER(i2c_host_product_name);
+    let log_msg = {message:"No I2C host adapter selected."};
+    const init_response = await i2c_host_adapter.initConnection();
+    if (init_response != undefined) {
+        log_msg = init_response.message;
+    };
+    await i2c_host_adapter.initDevice();
+    if (i2c_host_adapter.isConnected) {
+        document.getElementById("connected-adapter").value = `${i2c_host_adapter.device.productName} is connected`;
+        logMessage(log_msg);
+    }
+    return i2c_host_adapter
+
+}
 
 document.getElementById('usb-write-command').addEventListener('click', async () => {
     if (!i2c_host_adapter_name.toLowerCase().includes('Aard'.toLowerCase())) {
@@ -72,14 +96,20 @@ document.getElementById('usb-read-command').addEventListener('click', async () =
 
 document.getElementById('reset-mcp2221a').addEventListener('click', async () => {
     try {
-        await i2c_host_adapter.reset()
-        i2c_host_adapter = new MCP2221();
-        const init_response = await i2c_host_adapter.init();
-        logMessage(init_response.message)
-        await i2c_host_adapter.init_state();
-        gp_status = await i2c_host_adapter.gpioGetPins();
+        if (!(i2c_host_adapter.productName === "MCP2221A")) {
+            const error_msg = `MCP2221A is not connected.`
+            console.error(error_msg)
+            logMessage(error_msg)
+            throw new Error(error_msg);
+        }
+        await i2c_host_adapter.adapter.reset()
+        const i2c_host_product_name = "MCP2221A";
+        i2c_host_adapter = await connectI2CHostAdapter(i2c_host_product_name);
+        i2c_host_adapter_name = i2c_host_adapter.device.productName;
+        gp_status = await i2c_host_adapter.adapter.gpioGetPins();
+        updateGPIOStates(gp_status);
     } catch (error) {
-        document.getElementById('status').innerText = `Error: ${error.message}`;
+        document.getElementById('connected-adapter').value = `Error: ${error.message}`;
     }
 });
 
@@ -387,7 +417,7 @@ async function setGPIO(pin, state) {
     }
     if (i2c_host_adapter.device.opened) {
         logMessage(`setGPIO pin ${pin}, ${state}`)
-        const gpioState = await i2c_host_adapter.gpioSetPin(pin, state)
+        const gpioState = await i2c_host_adapter.adapter.gpioSetPin(pin, state)
         updateGPIOState(pin, gpioState)
         return false
     } else {
@@ -402,7 +432,7 @@ async function toggleGPIO(pin) {
         return {message:'Only MCP2221A supports setGPIO function', status: false}
     }
     if (i2c_host_adapter.device.opened) {
-        const gpioState = await i2c_host_adapter.toggleGpioPin(pin)
+        const gpioState = await i2c_host_adapter.adapter.toggleGpioPin(pin)
         console.log('gpioState',gpioState)
         logMessage(`toggleGPIO pin ${pin} to ${gpioState}`)
         updateGPIOState(pin, gpioState)

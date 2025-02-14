@@ -322,3 +322,6 @@ body {
     border-radius: 5px;
     width: 150px;
   }
+  .hidden {
+    display: none;
+  }
