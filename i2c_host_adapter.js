@@ -83,7 +83,6 @@ export class I2C_HOST_ADAPTER {
                 this.adapter.device = this.device;
                 break;
         }
-
     }
 
     async i2cWrite(i2c_slave_addr, i2c_reg_addr, data, read_back=false) {
@@ -93,7 +92,6 @@ export class I2C_HOST_ADAPTER {
 
     async i2cRead(i2c_slave_addr, i2c_reg_addr, i2c_length=1) {
         const response = await this.adapter.i2cRead(i2c_slave_addr, i2c_reg_addr, i2c_length);
-        await this.adapter.i2cRead(i2c_slave_addr, i2c_reg_addr, i2c_length);
         return response;
     }
 
